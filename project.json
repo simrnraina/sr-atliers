@@ -1,0 +1,23 @@
+{
+  "overview": "SR Atliers is a premium luxury fashion e-commerce website with a fully secured admin panel for owner-only product management. Features Internet Identity authentication, role-based access control, full product CRUD with image uploads, and a clean modern admin dashboard.",
+  "features": [
+    "Secure admin panel with role-based access",
+    "Full product management (add, edit, delete, view)",
+    "Image upload via object storage",
+    "Real-time dashboard stats",
+    "Orders management view",
+    "Internet Identity authentication",
+    "Protected admin routes",
+    "Luxury fashion storefront with cart, wishlist, and checkout"
+  ],
+  "category": "e-commerce",
+  "tags": [
+    "fashion",
+    "e-commerce",
+    "admin-panel",
+    "luxury",
+    "product-management",
+    "india"
+  ],
+  "last_updated": "2026-04-18T11:57:54.970Z"
+}

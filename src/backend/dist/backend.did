@@ -1,0 +1,178 @@
+type _ImmutableObjectStorageRefillResult = 
+ record {
+   success: opt bool;
+   topped_up_amount: opt nat;
+ };
+type _ImmutableObjectStorageRefillInformation = record {
+                                                  proposed_top_up_amount:
+                                                   opt nat;};
+type _ImmutableObjectStorageCreateCertificateResult = 
+ record {
+   blob_hash: text;
+   method: text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserId = principal;
+type UpdateProductInput = 
+ record {
+   category: opt Category;
+   description: opt text;
+   imageUrl: opt text;
+   name: opt text;
+   price: opt nat;
+   sizes: opt vec Size;
+   stock: opt vec record {
+                    Size;
+                    nat;
+                  };
+ };
+type Timestamp = int;
+type Size = 
+ variant {
+   L;
+   M;
+   S;
+   XL;
+ };
+type ShippingAddress = 
+ record {
+   addressLine1: text;
+   addressLine2: text;
+   city: text;
+   country: text;
+   fullName: text;
+   phone: text;
+   postalCode: text;
+   state: text;
+ };
+type ProductId = nat;
+type Product = 
+ record {
+   category: Category;
+   createdAt: Timestamp;
+   description: text;
+   id: ProductId;
+   imageUrl: text;
+   name: text;
+   price: nat;
+   sizes: vec Size;
+   stock: vec record {
+                Size;
+                nat;
+              };
+ };
+type OrderStatus = 
+ variant {
+   Delivered;
+   Pending;
+   Processing;
+   Shipped;
+ };
+type OrderItem = 
+ record {
+   productId: ProductId;
+   productName: text;
+   quantity: nat;
+   size: Size;
+   unitPrice: nat;
+ };
+type OrderId = nat;
+type Order = 
+ record {
+   createdAt: Timestamp;
+   id: OrderId;
+   items: vec OrderItem;
+   shippingAddress: ShippingAddress;
+   status: OrderStatus;
+   stripePaymentId: text;
+   total: nat;
+   userId: UserId;
+ };
+type NewsletterSubscription = 
+ record {
+   email: text;
+   subscribedAt: Timestamp;
+ };
+type DashboardStats = 
+ record {
+   totalOrders: nat;
+   totalProducts: nat;
+   totalRevenue: nat;
+ };
+type CreateProductInput = 
+ record {
+   category: Category;
+   description: text;
+   imageUrl: text;
+   name: text;
+   price: nat;
+   sizes: vec Size;
+   stock: vec record {
+                Size;
+                nat;
+              };
+ };
+type CreateOrderInput = 
+ record {
+   items: vec OrderItem;
+   shippingAddress: ShippingAddress;
+   stripePaymentId: text;
+ };
+type Category = 
+ variant {
+   BestSellers;
+   NewArrivals;
+   Trending;
+ };
+type CartItem = 
+ record {
+   productId: ProductId;
+   quantity: nat;
+   size: Size;
+ };
+service : {
+  _immutableObjectStorageBlobsAreLive: (hashes: vec blob) -> (vec bool) query;
+  _immutableObjectStorageBlobsToDelete: () -> (vec blob) query;
+  _immutableObjectStorageConfirmBlobDeletion: (blobs: vec blob) -> ();
+  _immutableObjectStorageCreateCertificate: (blobHash: text) ->
+   (_ImmutableObjectStorageCreateCertificateResult);
+  _immutableObjectStorageRefillCashier: (refillInformation:
+   opt _ImmutableObjectStorageRefillInformation) ->
+   (_ImmutableObjectStorageRefillResult);
+  _immutableObjectStorageUpdateGatewayPrincipals: () -> ();
+  _initializeAccessControl: () -> ();
+  addToCart: (productId: ProductId, size: Size, quantity: nat) -> ();
+  addToWishlist: (productId: ProductId) -> ();
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  clearCart: () -> ();
+  createOrder: (input: CreateOrderInput) -> (Order);
+  createProduct: (input: CreateProductInput) -> (Product);
+  deleteProduct: (id: ProductId) -> (bool);
+  getAllOrders: () -> (vec Order) query;
+  getCallerUserRole: () -> (UserRole) query;
+  getCart: () -> (vec CartItem) query;
+  getDashboardStats: () -> (DashboardStats) query;
+  getMyOrders: () -> (vec Order) query;
+  getNewsletterSubscribers: () -> (vec NewsletterSubscription) query;
+  getOrderById: (id: OrderId) -> (opt Order) query;
+  getProductById: (id: ProductId) -> (opt Product) query;
+  getProducts: () -> (vec Product) query;
+  getProductsByCategory: (category: Category) -> (vec Product) query;
+  getWishlist: () -> (vec ProductId) query;
+  isAdmin: () -> (bool) query;
+  isCallerAdmin: () -> (bool) query;
+  removeFromCart: (productId: ProductId, size: Size) -> ();
+  removeFromWishlist: (productId: ProductId) -> ();
+  searchProducts: (searchQuery: opt text, category: opt Category, minPrice:
+   opt nat, maxPrice: opt nat) -> (vec Product) query;
+  subscribeNewsletter: (email: text) -> ();
+  updateCartQuantity: (productId: ProductId, size: Size, quantity: nat) -> ();
+  updateOrderStatus: (id: OrderId, status: OrderStatus) -> (bool);
+  updateProduct: (id: ProductId, input: UpdateProductInput) -> (opt Product);
+  updateStock: (productId: ProductId, size: Size, quantity: nat) -> (bool);
+}
